@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MinimalApi.Data;
 using AutoMapper;
+using MinimalApi.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapGet("api/v1/commands", async (ICommandRepo repo, IMapper mapper) =>
+{
+    var commands = await repo.GetAllCommands();
+
+    return Results.Ok(mapper.Map<IEnumerable<CommandReadDto>>(commands));
+});
 
 
 app.Run();
